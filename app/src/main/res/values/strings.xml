@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Covid 19</string>
+    <string name="confirmed_dark">#FF083B</string>
+    <string name="active_dark">#017CFF</string>
+    <string name="recovered_dark">#29A746</string>
+    <string name="deceased_dark">#6D767E</string>
+</resources>

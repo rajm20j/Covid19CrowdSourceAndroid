@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1e1e1e</color>
+    <color name="colorPrimaryDark">#1e1e1e</color>
+    <color name="colorAccent">#4e4e4e</color>
+    <color name="almost_white">#fefefe</color>
+    <color name="off_white">#a1a1a1</color>
+    <color name="almost_black">#242424</color>
+    <color name="off_black">#414141</color>
+    <color name="confirmed">#FF6B89</color>
+    <color name="confirmed_dark">#FF083B</color>
+    <color name="active">#67B0FF</color>
+    <color name="active_dark">#017CFF</color>
+    <color name="recovered">#7FCA8F</color>
+    <color name="recovered_dark">#29A746</color>
+    <color name="deceased">#A7ACB1</color>
+    <color name="deceased_dark">#6D767E</color>
+</resources>
