@@ -6,4 +6,10 @@
     <string name="deceased_dark">#6D767E</string>
     <string name="a_crowdsourced_initiative">A CROWDSOURCED INITIATIVE</string>
     <string name="india_covid_19_tracker">INDIA COVID-19 TRACKER</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="active">Active</string>
+    <string name="recovered">Recovered</string>
+    <string name="deceased">Deceased</string>
+    <string name="stateut">State/UT</string>
+    <string name="hyphen">-</string>
 </resources>

@@ -123,6 +123,7 @@ class HomeActivity : AppCompatActivity() {
 
         binding.homeRv.adapter = HomeStatsListAdapter(this, allData)
         binding.homeRv.layoutManager= LinearLayoutManager(this)
+        (binding.homeRv.adapter as HomeStatsListAdapter).notifyItemRangeInserted(0, allData!!.size)
     }
 
     private fun consumeHomeStateData(apiResponse: ApiResponse) {
