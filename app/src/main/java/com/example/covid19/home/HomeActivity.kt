@@ -25,7 +25,9 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 
 class HomeActivity : AppCompatActivity() {
@@ -95,18 +97,18 @@ class HomeActivity : AppCompatActivity() {
     private fun consumeHomeData(apiResponse: ApiResponse) {
         when (apiResponse.status) {
             Status.LOADING -> {
-                binding.jumboShimmer.startShimmer()
+                binding.cardShimmer.startShimmer()
             }
 
             Status.ERROR -> {
-                binding.jumboShimmer.stopShimmer()
+                binding.cardShimmer.stopShimmer()
                 renderErrorHomeDataResponse(apiResponse.error)
             }
 
             Status.SUCCESS -> {
                 renderSuccessHomeDataResponse(apiResponse.data)
-                binding.jumboShimmer.stopShimmer()
-                binding.jumboShimmer.hideShimmer()
+                binding.cardShimmer.stopShimmer()
+                binding.cardShimmer.hideShimmer()
             }
             else -> Log.e(TAG, "Ye kya hua? :O")
         }
@@ -116,9 +118,9 @@ class HomeActivity : AppCompatActivity() {
         val jsonObject = data!!.asJsonObject
         Utils.logInPrettyFormat(TAG, jsonObject.toString())
 
-        var allData: HashMap<String?, StateData?>? = null
+        var allData: SortedMap<String?, StateData?>? = null
         try {
-            val type: Type = object : TypeToken<HashMap<String?, StateData?>?>() {}.type
+            val type: Type = object : TypeToken<SortedMap<String?, StateData?>?>() {}.type
             allData = gson.fromJson(jsonObject.toString(), type)
             Log.v("MAINNN", "Data kiya store")
         } catch (e: Exception) {
@@ -133,18 +135,18 @@ class HomeActivity : AppCompatActivity() {
     private fun consumeHomeStateData(apiResponse: ApiResponse) {
         when (apiResponse.status) {
             Status.LOADING -> {
-                binding.cardShimmer.startShimmer()
+                binding.jumboShimmer.startShimmer()
             }
 
             Status.ERROR -> {
                 renderErrorHomeSDataResponse(apiResponse.error)
-                binding.cardShimmer.stopShimmer()
+                binding.jumboShimmer.stopShimmer()
             }
 
             Status.SUCCESS -> {
                 renderSuccessHomeSDataResponse(apiResponse.data)
-                binding.cardShimmer.stopShimmer()
-                binding.cardShimmer.hideShimmer()
+                binding.jumboShimmer.stopShimmer()
+                binding.jumboShimmer.hideShimmer()
             }
             else -> Log.e(TAG, "Ye kya hua? :O")
         }

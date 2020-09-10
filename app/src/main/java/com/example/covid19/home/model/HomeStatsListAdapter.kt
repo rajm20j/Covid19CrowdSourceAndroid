@@ -11,12 +11,14 @@ import com.example.covid19.R
 import com.example.covid19.extras.Constants
 import com.example.covid19.home.newModel.dataV4.StateData
 import com.example.covid19.utils.Utils
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHolder>() {
 
     lateinit var context: Context
-    var listItems: HashMap<String?, StateData?>? = null
+    var listItems: SortedMap<String?, StateData?>? = null
     var keyItem: MutableList<String?>? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.home_list_item, parent, false)
@@ -85,7 +87,7 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
         val deceased = itemView.findViewById(R.id.deceased) as TextView
     }
 
-    constructor(context: Context, listItems: HashMap<String?, StateData?>?) : this() {
+    constructor(context: Context, listItems: SortedMap<String?, StateData?>?) : this() {
         this.context = context
         this.listItems = listItems
         val keyItem: MutableList<String?> = mutableListOf()
