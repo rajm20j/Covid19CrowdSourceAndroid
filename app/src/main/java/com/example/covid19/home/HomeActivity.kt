@@ -95,14 +95,18 @@ class HomeActivity : AppCompatActivity() {
     private fun consumeHomeData(apiResponse: ApiResponse) {
         when (apiResponse.status) {
             Status.LOADING -> {
+                binding.jumboShimmer.startShimmer()
             }
 
             Status.ERROR -> {
+                binding.jumboShimmer.stopShimmer()
                 renderErrorHomeDataResponse(apiResponse.error)
             }
 
             Status.SUCCESS -> {
                 renderSuccessHomeDataResponse(apiResponse.data)
+                binding.jumboShimmer.stopShimmer()
+                binding.jumboShimmer.hideShimmer()
             }
             else -> Log.e(TAG, "Ye kya hua? :O")
         }
@@ -129,14 +133,18 @@ class HomeActivity : AppCompatActivity() {
     private fun consumeHomeStateData(apiResponse: ApiResponse) {
         when (apiResponse.status) {
             Status.LOADING -> {
+                binding.cardShimmer.startShimmer()
             }
 
             Status.ERROR -> {
                 renderErrorHomeSDataResponse(apiResponse.error)
+                binding.cardShimmer.stopShimmer()
             }
 
             Status.SUCCESS -> {
                 renderSuccessHomeSDataResponse(apiResponse.data)
+                binding.cardShimmer.stopShimmer()
+                binding.cardShimmer.hideShimmer()
             }
             else -> Log.e(TAG, "Ye kya hua? :O")
         }
