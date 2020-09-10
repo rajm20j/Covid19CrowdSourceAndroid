@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covid19.R
+import com.example.covid19.extras.Constants
 import com.example.covid19.home.newModel.dataV4.StateData
 import com.example.covid19.utils.Utils
 
@@ -25,7 +26,7 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if(position%2 == 0)
             holder.linearLayout.setBackgroundColor(context.resources.getColor(R.color.almost_almost_white, null))
-        holder.bannerText.text = keyItem?.get(position)!!
+        holder.bannerText.text = Constants.states[keyItem?.get(position)!!]
         holder.bannerText.setBackgroundColor(context.resources.getColor(R.color.almost_almost_white, null))
 
         if(position == 0) {
