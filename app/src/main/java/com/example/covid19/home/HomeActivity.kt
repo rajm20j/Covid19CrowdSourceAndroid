@@ -155,7 +155,7 @@ class HomeActivity : AppCompatActivity() {
         }
         val lastDateEntry  = allData?.get("TT")?.dates?.lastEntry()?.key!!
         Log.v("MAINNN", lastDateEntry)
-        fillJumboTab(allData?.get("TT")?.dates?.get(lastDateEntry))
+        fillJumboTab(allData["TT"]?.dates?.get(lastDateEntry))
     }
 
     @SuppressLint("SetTextI18n")
