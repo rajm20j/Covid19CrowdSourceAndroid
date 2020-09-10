@@ -20,10 +20,11 @@ import com.example.covid19.R
 import com.example.covid19.data.model.ApiResponse
 import com.example.covid19.data.model.Status
 import com.example.covid19.databinding.ActivityHomeBinding
+import com.example.covid19.extras.Constants
 import com.example.covid19.home.model.CasesTimeSery
-import com.example.covid19.home.model.HomeDataClass
 import com.example.covid19.home.model.KeyValue
-import com.example.covid19.home.model.Statewise
+import com.example.covid19.home.newModel.dataV4.StateData
+import com.example.covid19.home.newModel.timeSeries.Dates
 import com.example.covid19.utils.Utils
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.Entry
@@ -33,6 +34,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 class HomeActivity : AppCompatActivity() {
@@ -64,8 +68,13 @@ class HomeActivity : AppCompatActivity() {
         homeActivityViewModel.homeDataResponse.observe(
             this,
             Observer<ApiResponse> { this.consumeHomeData(it) })
-        homeActivityViewModel.hitHomeDataApi()
 
+        homeActivityViewModel.homeStateDataResponse.observe(
+            this,
+            Observer<ApiResponse> { this.consumeHomeStateData(it) })
+
+        homeActivityViewModel.hitHomeDataApi()
+        homeActivityViewModel.hitHomeStateDataApi()
     }
 
     private fun consumeHomeData(apiResponse: ApiResponse) {
@@ -88,21 +97,69 @@ class HomeActivity : AppCompatActivity() {
         val jsonObject = data!!.asJsonObject
         Utils.logInPrettyFormat(TAG, jsonObject.toString())
 
-        var allData: HomeDataClass? = null
+        var allData: HashMap<String?, StateData?>? = null
         try {
-            allData = gson.fromJson(jsonObject.toString(), HomeDataClass::class.java)
+            val type: Type = object : TypeToken<HashMap<String?, StateData?>?>() {}.type
+            allData = gson.fromJson(jsonObject.toString(), type)
+            Log.v("MAINNN", "Data kiya store")
         } catch (e: Exception) {
             Toast.makeText(this, "Arrey aggey ni parse ho ra", Toast.LENGTH_SHORT).show()
+        }
+        Log.v("MAINNN", allData!!.size.toString())
+        for ((key, value) in allData)
+        {
+            Log.v("MAINNN", "$key: ${value?.total?.confirmed}")
         }
 //        binding.homeRvForTopTab.adapter = HomeStatsListAdapter(this, allData!!.statewise)
 //        binding.homeRvForTopTab.layoutManager= LinearLayoutManager(this)
 
-        fillJumboTab(allData?.statewise?.get(0), allData?.key_values?.get(0))
-        generateChart(allData?.cases_time_series)
-        generateChart2(allData?.cases_time_series)
+        fillJumboTab(allData)
+//        generateChart(allData?.cases_time_series)
+//        generateChart2(allData?.cases_time_series)
     }
 
-    private fun generateChart2(casesTimeSeries: List<CasesTimeSery>?) {
+    private fun consumeHomeStateData(apiResponse: ApiResponse) {
+        when (apiResponse.status) {
+            Status.LOADING -> {
+            }
+
+            Status.ERROR -> {
+                renderErrorHomeSDataResponse(apiResponse.error)
+            }
+
+            Status.SUCCESS -> {
+                renderSuccessHomeSDataResponse(apiResponse.data)
+            }
+            else -> Log.e(TAG, "Ye kya hua? :O")
+        }
+    }
+
+    private fun renderSuccessHomeSDataResponse(data: JsonElement?) {
+        val jsonObject = data!!.asJsonObject
+        Utils.logInPrettyFormat(TAG, jsonObject.toString())
+
+        var allData: HashMap<String?, Dates?>? = null
+        try {
+            val type: Type = object : TypeToken<HashMap<String?, Dates?>?>() {}.type
+            allData = gson.fromJson(jsonObject.toString(), type)
+            Log.v("MAINNN", "Data kiya store")
+        } catch (e: Exception) {
+            Toast.makeText(this, "Arrey aggey ni parse ho ra", Toast.LENGTH_SHORT).show()
+        }
+        Log.v("MAINNN", allData!!.size.toString())
+        for ((key, value) in allData)
+        {
+            Log.v("MAINNN", "$key == ${value?.dates?.get("2020-09-10")?.total?.confirmed.toString()}")
+        }
+//        binding.homeRvForTopTab.adapter = HomeStatsListAdapter(this, allData!!.statewise)
+//        binding.homeRvForTopTab.layoutManager= LinearLayoutManager(this)
+
+//        fillJumboTab(allData)
+//        generateChart(allData?.cases_time_series)
+//        generateChart2(allData?.cases_time_series)
+    }
+
+   /* private fun generateChart2(casesTimeSeries: List<CasesTimeSery>?) {
 
         binding.homeChart2.setDrawGridBackground(false)
         binding.homeChart2.description.isEnabled = false
@@ -162,27 +219,34 @@ class HomeActivity : AppCompatActivity() {
         binding.homeChart2.data = data
         binding.homeChart2.invalidate()
 
-    }
+    }*/
 
     @SuppressLint("SetTextI18n")
-    private fun fillJumboTab(currentStats: Statewise?, deltas: KeyValue?) {
-        binding.homeConfirmed.text = currentStats?.confirmed
-        binding.homeActive.text = currentStats?.active
-        binding.homeRecovered.text = currentStats?.recovered
-        binding.homeDeceased.text = currentStats?.deaths
+    private fun fillJumboTab(currentStats: HashMap<String?, StateData?>?) {
 
-        val confirmedDelta = deltas!!.confirmeddelta
-        val deceasedDelta = deltas.deceaseddelta
-        val recoveredDelta = deltas.recovereddelta
-        val activeDelta = confirmedDelta.toInt() - deceasedDelta.toInt() - recoveredDelta.toInt()
-        binding.homeConfirmedDelta.text = "[+$confirmedDelta]"
-        binding.homeDeceasedDelta.text = "[+$deceasedDelta]"
-        binding.homeRecoveredDelta.text = "[+$recoveredDelta]"
-        binding.homeActiveDelta.text = "[+$activeDelta]"
+        var total = 0
+        currentStats?.forEach { (_, value) -> total += value?.total?.confirmed!! }
+
+        binding.homeConfirmed.text = Utils.formatNumber(currentStats?.get(Constants.India)?.total?.confirmed)
+
+        val active = currentStats?.get(Constants.India)?.total?.confirmed!!.minus(currentStats[Constants.India]?.total?.recovered!!).minus(
+            currentStats[Constants.India]?.total?.deceased!!)
+        binding.homeActive.text = Utils.formatNumber(active)
+        binding.homeRecovered.text = Utils.formatNumber(currentStats[Constants.India]?.total?.recovered)
+        binding.homeDeceased.text = Utils.formatNumber(currentStats[Constants.India]?.total?.deceased)
+////
+////        val confirmedDelta = deltas!!.confirmeddelta
+////        val deceasedDelta = deltas.deceaseddelta
+////        val recoveredDelta = deltas.recovereddelta
+//        val activeDelta = confirmedDelta.toInt() - deceasedDelta.toInt() - recoveredDelta.toInt()
+//        binding.homeConfirmedDelta.text = "[+$confirmedDelta]"
+//        binding.homeDeceasedDelta.text = "[+$deceasedDelta]"
+//        binding.homeRecoveredDelta.text = "[+$recoveredDelta]"
+//        binding.homeActiveDelta.text = "[+$activeDelta]"
 
     }
 
-    private fun generateChart(casesTimeSeries: List<CasesTimeSery>?) {
+    /*private fun generateChart(casesTimeSeries: List<CasesTimeSery>?) {
         binding.homeChart.setProgressBar(binding.homePb)
 
         val cartesian = AnyChart.line()
@@ -285,7 +349,7 @@ class HomeActivity : AppCompatActivity() {
         cartesian.legend().padding(0.0, 0.0, 10.0, 0.0)
 
         binding.homeChart.setChart(cartesian)
-    }
+    }*/
 
 
     class CustomDataEntry(
@@ -302,6 +366,10 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun renderErrorHomeDataResponse(error: Throwable?) {
+        Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
+    }
+
+    private fun renderErrorHomeSDataResponse(error: Throwable?) {
         Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
     }
 }

@@ -4,4 +4,6 @@
     <string name="active_dark">#017CFF</string>
     <string name="recovered_dark">#29A746</string>
     <string name="deceased_dark">#6D767E</string>
+    <string name="a_crowdsourced_initiative">A CROWDSOURCED INITIATIVE</string>
+    <string name="india_covid_19_tracker">INDIA COVID-19 TRACKER</string>
 </resources>

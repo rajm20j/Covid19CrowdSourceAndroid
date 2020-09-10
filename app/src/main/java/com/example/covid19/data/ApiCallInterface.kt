@@ -6,6 +6,9 @@ import retrofit2.http.GET
 
 interface ApiCallInterface {
 
-    @GET("/data.json")
+    @GET("v4/data.json")
     fun homeData(): Single<JsonElement>
+
+    @GET("v4/timeseries.json")
+    fun homeStateData(): Single<JsonElement>
 }

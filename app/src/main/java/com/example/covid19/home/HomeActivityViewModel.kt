@@ -17,6 +17,11 @@ class HomeActivityViewModel internal constructor(private val repository: Reposit
     internal val homeDataResponse: LiveData<ApiResponse>
         get() = responseLiveData
 
+    private val responseStateLiveData = MutableLiveData<ApiResponse>()
+
+    internal val homeStateDataResponse: LiveData<ApiResponse>
+        get() = responseStateLiveData
+
     internal fun hitHomeDataApi() {
         disposable.add(repository.executeHomeDataApi()
             .subscribeOn(Schedulers.io())
@@ -25,6 +30,17 @@ class HomeActivityViewModel internal constructor(private val repository: Reposit
             .subscribe(
                 { result -> responseLiveData.setValue(ApiResponse.success(result)) },
                 { error -> responseLiveData.setValue(ApiResponse.error(error)) }
+            ))
+    }
+
+    internal fun hitHomeStateDataApi() {
+        disposable.add(repository.executeHomeStateDataApi()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { responseStateLiveData.setValue(ApiResponse.loading()) }
+            .subscribe(
+                { result -> responseStateLiveData.setValue(ApiResponse.success(result)) },
+                { error -> responseStateLiveData.setValue(ApiResponse.error(error)) }
             ))
     }
 
