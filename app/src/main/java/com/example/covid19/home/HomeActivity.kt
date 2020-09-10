@@ -7,36 +7,20 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.anychart.AnyChart
-import com.anychart.chart.common.dataentry.DataEntry
 import com.anychart.chart.common.dataentry.ValueDataEntry
-import com.anychart.data.Set
-import com.anychart.enums.Anchor
-import com.anychart.enums.MarkerType
-import com.anychart.enums.TooltipPositionMode
-import com.anychart.graphics.vector.Stroke
 import com.example.covid19.MyApp
-import com.example.covid19.R
 import com.example.covid19.data.model.ApiResponse
 import com.example.covid19.data.model.Status
 import com.example.covid19.databinding.ActivityHomeBinding
 import com.example.covid19.extras.Constants
-import com.example.covid19.home.model.CasesTimeSery
-import com.example.covid19.home.model.KeyValue
 import com.example.covid19.home.newModel.dataV4.StateData
-import com.example.covid19.home.newModel.timeSeries.Dates
+import com.example.covid19.home.newModel.timeSeries.DateData
+import com.example.covid19.home.newModel.timeSeries.DateInfo
 import com.example.covid19.utils.Utils
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-import java.text.DecimalFormat
 import javax.inject.Inject
 
 class HomeActivity : AppCompatActivity() {
@@ -105,15 +89,12 @@ class HomeActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, "Arrey aggey ni parse ho ra", Toast.LENGTH_SHORT).show()
         }
-        Log.v("MAINNN", allData!!.size.toString())
-        for ((key, value) in allData)
-        {
-            Log.v("MAINNN", "$key: ${value?.total?.confirmed}")
-        }
+
+        
+
 //        binding.homeRvForTopTab.adapter = HomeStatsListAdapter(this, allData!!.statewise)
 //        binding.homeRvForTopTab.layoutManager= LinearLayoutManager(this)
 
-        fillJumboTab(allData)
 //        generateChart(allData?.cases_time_series)
 //        generateChart2(allData?.cases_time_series)
     }
@@ -138,25 +119,17 @@ class HomeActivity : AppCompatActivity() {
         val jsonObject = data!!.asJsonObject
         Utils.logInPrettyFormat(TAG, jsonObject.toString())
 
-        var allData: HashMap<String?, Dates?>? = null
+        var allData: HashMap<String?, DateData?>? = null
         try {
-            val type: Type = object : TypeToken<HashMap<String?, Dates?>?>() {}.type
+            val type: Type = object : TypeToken<HashMap<String?, DateData?>?>() {}.type
             allData = gson.fromJson(jsonObject.toString(), type)
             Log.v("MAINNN", "Data kiya store")
         } catch (e: Exception) {
             Toast.makeText(this, "Arrey aggey ni parse ho ra", Toast.LENGTH_SHORT).show()
         }
-        Log.v("MAINNN", allData!!.size.toString())
-        for ((key, value) in allData)
-        {
-            Log.v("MAINNN", "$key == ${value?.dates?.get("2020-09-10")?.total?.confirmed.toString()}")
-        }
-//        binding.homeRvForTopTab.adapter = HomeStatsListAdapter(this, allData!!.statewise)
-//        binding.homeRvForTopTab.layoutManager= LinearLayoutManager(this)
-
-//        fillJumboTab(allData)
-//        generateChart(allData?.cases_time_series)
-//        generateChart2(allData?.cases_time_series)
+        val lastDateEntry  = allData?.get("TT")?.dates?.lastEntry()?.key!!
+        Log.v("MAINNN", lastDateEntry)
+        fillJumboTab(allData?.get("TT")?.dates?.get(lastDateEntry))
     }
 
    /* private fun generateChart2(casesTimeSeries: List<CasesTimeSery>?) {
@@ -222,28 +195,30 @@ class HomeActivity : AppCompatActivity() {
     }*/
 
     @SuppressLint("SetTextI18n")
-    private fun fillJumboTab(currentStats: HashMap<String?, StateData?>?) {
+    private fun fillJumboTab(currentStats: DateInfo?) {
 
         var total = 0
-        currentStats?.forEach { (_, value) -> total += value?.total?.confirmed!! }
 
-        binding.homeConfirmed.text = Utils.formatNumber(currentStats?.get(Constants.India)?.total?.confirmed)
+        binding.homeConfirmed.text = Utils.formatNumber(currentStats?.total?.confirmed)
 
-        val active = currentStats?.get(Constants.India)?.total?.confirmed!!.minus(currentStats[Constants.India]?.total?.recovered!!).minus(
-            currentStats[Constants.India]?.total?.deceased!!)
+        val active = currentStats?.total?.confirmed!!.minus(currentStats.total?.recovered!!).minus(
+            currentStats.total?.deceased!!)
         binding.homeActive.text = Utils.formatNumber(active)
-        binding.homeRecovered.text = Utils.formatNumber(currentStats[Constants.India]?.total?.recovered)
-        binding.homeDeceased.text = Utils.formatNumber(currentStats[Constants.India]?.total?.deceased)
-////
-////        val confirmedDelta = deltas!!.confirmeddelta
-////        val deceasedDelta = deltas.deceaseddelta
-////        val recoveredDelta = deltas.recovereddelta
-//        val activeDelta = confirmedDelta.toInt() - deceasedDelta.toInt() - recoveredDelta.toInt()
-//        binding.homeConfirmedDelta.text = "[+$confirmedDelta]"
-//        binding.homeDeceasedDelta.text = "[+$deceasedDelta]"
-//        binding.homeRecoveredDelta.text = "[+$recoveredDelta]"
-//        binding.homeActiveDelta.text = "[+$activeDelta]"
+        binding.homeRecovered.text = Utils.formatNumber(currentStats.total?.recovered)
+        binding.homeDeceased.text = Utils.formatNumber(currentStats.total?.deceased)
 
+        val confirmedDelta = Utils.formatNumber(currentStats.delta?.confirmed)
+        binding.homeConfirmedDelta.text = "[+$confirmedDelta]"
+
+        val deceasedDelta = Utils.formatNumber(currentStats.delta?.deceased)
+        binding.homeDeceasedDelta.text = "[+$deceasedDelta]"
+
+        val recoveredDelta = Utils.formatNumber(currentStats.delta?.recovered)
+        binding.homeRecoveredDelta.text = "[+$recoveredDelta]"
+
+        val activeDelta = Utils.formatNumber(currentStats.delta?.confirmed!!.minus(currentStats.delta?.recovered!!).minus(
+            currentStats.delta?.deceased!!))
+        binding.homeActiveDelta.text = "[+$activeDelta]"
     }
 
     /*private fun generateChart(casesTimeSeries: List<CasesTimeSery>?) {
