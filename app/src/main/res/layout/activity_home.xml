@@ -1,281 +1,274 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/top_constraint"
+        <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="20dp"
-        tools:context=".home.HomeActivity">
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
 
-        <TextView
-            android:id="@+id/home_title"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:fontFamily="@font/roboto_bold"
-            android:paddingStart="16dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/india_covid_19_tracker"
-            android:textAllCaps="true"
-            android:textColor="@color/almost_white"
-            android:textSize="32sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/home_sub_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:fontFamily="@font/roboto_slab_light"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:text="@string/a_crowdsourced_initiative"
-            android:textColor="@color/off_white"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_title" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintBottom_toTopOf="@+id/rv_card"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/home_sub_title">
-
-            <GridLayout
-                android:id="@+id/home_gl"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleGravity="top"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            <TextView
+                android:id="@+id/home_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:columnCount="2"
-                android:padding="8dp"
-                android:rowCount="2">
+                android:background="@color/colorPrimary"
+                android:fontFamily="@font/roboto_bold"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:text="@string/india_covid_19_tracker"
+                android:textAllCaps="true"
+                android:textColor="@color/almost_white"
+                android:textSize="32sp"/>
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                app:popupTheme="@style/ThemeOverlay.MaterialComponents.ActionBar"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"/>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab"
-                        android:gravity="center_horizontal"
-                        android:text="Confirmed"
-                        android:textAllCaps="true"
-                        android:textColor="@color/confirmed"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/home_confirmed_delta"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab"
-                        android:gravity="center_horizontal"
-                        android:text="[+50]"
-                        android:textAllCaps="true"
-                        android:textColor="@color/confirmed"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/home_confirmed"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab_bold"
-                        android:gravity="center_horizontal"
-                        android:text="700"
-                        android:textAllCaps="true"
-                        android:textColor="@color/confirmed_dark"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab"
-                        android:gravity="center_horizontal"
-                        android:text="Active"
-                        android:textAllCaps="true"
-                        android:textColor="@color/active"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/home_active_delta"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab"
-                        android:gravity="center_horizontal"
-                        android:text="[+25]"
-                        android:textAllCaps="true"
-                        android:textColor="@color/active"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/home_active"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab_bold"
-                        android:gravity="center_horizontal"
-                        android:text="500"
-                        android:textAllCaps="true"
-                        android:textColor="@color/active_dark"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab"
-                        android:gravity="center_horizontal"
-                        android:text="Recovered"
-                        android:textAllCaps="true"
-                        android:textColor="@color/recovered"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/home_recovered_delta"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab"
-                        android:gravity="center_horizontal"
-                        android:text="[+5]"
-                        android:textAllCaps="true"
-                        android:textColor="@color/recovered"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/home_recovered"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab_bold"
-                        android:gravity="center_horizontal"
-                        android:text="20"
-                        android:textAllCaps="true"
-                        android:textColor="@color/recovered_dark"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab"
-                        android:gravity="center_horizontal"
-                        android:text="Deceased"
-                        android:textAllCaps="true"
-                        android:textColor="@color/deceased"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/home_deceased_delta"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab"
-                        android:gravity="center_horizontal"
-                        android:text="[+3]"
-                        android:textAllCaps="true"
-                        android:textColor="@color/deceased"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/home_deceased"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_slab_bold"
-                        android:gravity="center_horizontal"
-                        android:text="10"
-                        android:textAllCaps="true"
-                        android:textColor="@color/deceased_dark"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-            </GridLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!--<com.anychart.AnyChartView
-            android:visibility="gone"
-            android:id="@+id/home_chart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/home_gl"/>
-
-        <ProgressBar
-            android:visibility="gone"
-            android:id="@+id/home_pb"
-            style="?android:attr/progressBarStyleSmall"
-            android:outlineAmbientShadowColor="@color/almost_black"
-            android:outlineSpotShadowColor="@color/off_black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/home_gl"/>
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:visibility="gone"
-            android:id="@+id/home_chart_2"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_chart"/>-->
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/rv_card"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_constraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/card_view">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/home_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            tools:itemCount="28" />
-        </androidx.cardview.widget.CardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+            tools:context=".home.HomeActivity">
+            <TextView
+                android:id="@+id/home_sub_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:fontFamily="@font/roboto_slab_light"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"
+                android:paddingTop="8dp"
+                android:text="@string/a_crowdsourced_initiative"
+                android:textColor="@color/off_white"
+                android:textSize="16sp"
+                android:layout_gravity="bottom"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintBottom_toTopOf="@+id/rv_card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/home_sub_title">
+
+                <GridLayout
+                    android:id="@+id/home_gl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:columnCount="2"
+                    android:padding="8dp"
+                    android:rowCount="2">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab"
+                            android:gravity="center_horizontal"
+                            android:text="Confirmed"
+                            android:textAllCaps="false"
+                            android:textColor="@color/confirmed"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/home_confirmed_delta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab"
+                            android:gravity="center_horizontal"
+                            android:text="[+50]"
+                            android:textAllCaps="true"
+                            android:textColor="@color/confirmed"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/home_confirmed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab_bold"
+                            android:gravity="center_horizontal"
+                            android:text="700"
+                            android:textAllCaps="true"
+                            android:textColor="@color/confirmed_dark"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab"
+                            android:gravity="center_horizontal"
+                            android:text="Active"
+                            android:textAllCaps="false"
+                            android:textColor="@color/active"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/home_active_delta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab"
+                            android:gravity="center_horizontal"
+                            android:text="[+25]"
+                            android:textAllCaps="true"
+                            android:textColor="@color/active"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/home_active"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab_bold"
+                            android:gravity="center_horizontal"
+                            android:text="500"
+                            android:textAllCaps="true"
+                            android:textColor="@color/active_dark"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab"
+                            android:gravity="center_horizontal"
+                            android:text="Recovered"
+                            android:textAllCaps="false"
+                            android:textColor="@color/recovered"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/home_recovered_delta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab"
+                            android:gravity="center_horizontal"
+                            android:text="[+5]"
+                            android:textAllCaps="true"
+                            android:textColor="@color/recovered"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/home_recovered"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab_bold"
+                            android:gravity="center_horizontal"
+                            android:text="20"
+                            android:textAllCaps="true"
+                            android:textColor="@color/recovered_dark"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab"
+                            android:gravity="center_horizontal"
+                            android:text="Deceased"
+                            android:textAllCaps="false"
+                            android:textColor="@color/deceased"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/home_deceased_delta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab"
+                            android:gravity="center_horizontal"
+                            android:text="[+3]"
+                            android:textAllCaps="true"
+                            android:textColor="@color/deceased"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:id="@+id/home_deceased"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_slab_bold"
+                            android:gravity="center_horizontal"
+                            android:text="10"
+                            android:textAllCaps="true"
+                            android:textColor="@color/deceased_dark"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                </GridLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/rv_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_view">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/home_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:itemCount="28" />
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
