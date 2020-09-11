@@ -122,12 +122,11 @@ class HomeActivity : AppCompatActivity() {
         try {
             val type: Type = object : TypeToken<SortedMap<String?, StateData?>?>() {}.type
             allData = gson.fromJson(jsonObject.toString(), type)
-            Log.v("MAINNN", "Data kiya store")
         } catch (e: Exception) {
             Toast.makeText(this, "Arrey aggey ni parse ho ra", Toast.LENGTH_SHORT).show()
         }
 
-        binding.homeRv.adapter = HomeStatsListAdapter(this, allData)
+        binding.homeRv.adapter = HomeStatsListAdapter(this, allData, supportFragmentManager)
         binding.homeRv.layoutManager= LinearLayoutManager(this)
         (binding.homeRv.adapter as HomeStatsListAdapter).notifyItemRangeInserted(0, allData!!.size)
     }
@@ -160,12 +159,10 @@ class HomeActivity : AppCompatActivity() {
         try {
             val type: Type = object : TypeToken<HashMap<String?, DateData?>?>() {}.type
             allData = gson.fromJson(jsonObject.toString(), type)
-            Log.v("MAINNN", "Data kiya store")
         } catch (e: Exception) {
             Toast.makeText(this, "Arrey aggey ni parse ho ra", Toast.LENGTH_SHORT).show()
         }
         val lastDateEntry  = allData?.get("TT")?.dates?.lastEntry()?.key!!
-        Log.v("MAINNN", lastDateEntry)
         fillJumboTab(allData["TT"]?.dates?.get(lastDateEntry))
     }
 

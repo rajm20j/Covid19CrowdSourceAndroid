@@ -1,18 +1,21 @@
 package com.example.covid19.home.model
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.covid19.R
 import com.example.covid19.extras.Constants
 import com.example.covid19.home.newModel.dataV4.StateData
+import com.example.covid19.utils.DialogHelper
 import com.example.covid19.utils.Utils
 import java.util.*
-import kotlin.collections.HashMap
+import kotlin.collections.ArrayList
 
 
 class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHolder>() {
@@ -20,6 +23,7 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
     lateinit var context: Context
     var listItems: SortedMap<String?, StateData?>? = null
     var keyItem: MutableList<String?>? = null
+    var fragmentManager: FragmentManager? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.home_list_item, parent, false)
         return ViewHolder(v)
@@ -71,6 +75,15 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
 
         if(deceased != null)
             holder.deceased.text = Utils.formatNumber(deceased)
+
+        holder.linearLayout.setOnClickListener {
+            val dialogHelper = DialogHelper()
+            Log.v("MAINNN", position.toString())
+            listItems?.get(keyItem?.get(position)!!)?.districts?.forEach { key, value ->
+                Log.v("MAINNN", key)
+            }
+            dialogHelper.getHeadingListSlideUp(fragmentManager, listItems?.get(keyItem?.get(position)!!)?.districts)
+        }
     }
 
 
@@ -87,10 +100,11 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
         val deceased = itemView.findViewById(R.id.deceased) as TextView
     }
 
-    constructor(context: Context, listItems: SortedMap<String?, StateData?>?) : this() {
+    constructor(context: Context, listItems: SortedMap<String?, StateData?>?, fragmentManager: FragmentManager) : this() {
         this.context = context
         this.listItems = listItems
-        val keyItem: MutableList<String?> = mutableListOf()
+        this.fragmentManager = fragmentManager
+        val keyItem: ArrayList<String?> = arrayListOf()
         listItems?.forEach { (key, _) -> keyItem.add(key) }
         this.keyItem = keyItem
     }

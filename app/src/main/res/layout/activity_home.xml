@@ -74,7 +74,7 @@
                 android:id="@+id/jumbo_shimmer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/card_shimmer"
+                app:layout_constraintBottom_toTopOf="@+id/rv_card"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/home_sub_title">
