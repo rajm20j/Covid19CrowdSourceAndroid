@@ -1,23 +1,23 @@
 package com.example.covid19.bottomsheets
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.covid19.R
 import com.example.covid19.databinding.FragmentStateDataBsListBinding
 import com.example.covid19.databinding.StateDataListBinding
-import com.example.covid19.extras.Constants
+import com.example.covid19.home.newModel.dataV4.StateData
 import com.example.covid19.home.newModel.dataV4.districts.Districts
 import com.example.covid19.utils.Utils
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class StateDataBS : BottomSheetDialogFragment() {
@@ -37,9 +37,36 @@ class StateDataBS : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        fillJumboTab1()
         binding.stateRv.layoutManager =
             LinearLayoutManager(context)
         binding.stateRv.adapter = ItemAdapter(districtMap?.size!!)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun fillJumboTab1(currentStats: StateData?) {
+        Log.v("MAINNN", currentStats?.total?.confirmed.toString())
+        binding.homeConfirmed.text = Utils.formatNumber(currentStats?.total?.confirmed)
+
+        val active = currentStats?.total?.confirmed!!.minus(currentStats.total.recovered!!).minus(
+            currentStats.total.deceased!!)
+        binding.homeActive.text = Utils.formatNumber(active)
+        binding.homeRecovered.text = Utils.formatNumber(currentStats.total.recovered)
+        binding.homeDeceased.text = Utils.formatNumber(currentStats.total.deceased)
+
+        val confirmedDelta = Utils.formatNumber(currentStats.delta?.confirmed)
+        binding.homeConfirmedDelta.text = "[+$confirmedDelta]"
+
+        val deceasedDelta = Utils.formatNumber(currentStats.delta?.deceased)
+        binding.homeDeceasedDelta.text = "[+$deceasedDelta]"
+
+        val recoveredDelta = Utils.formatNumber(currentStats.delta?.recovered)
+        binding.homeRecoveredDelta.text = "[+$recoveredDelta]"
+
+        /*val activeDelta = Utils.formatNumber(currentStats.delta?.confirmed!!.minus(currentStats.delta?.recovered!!).minus(
+            currentStats.delta?.deceased!!))
+        binding.homeActiveDelta.text = "[+$activeDelta]"*/
+        binding.homeActiveDelta.visibility = View.INVISIBLE
     }
 
     private inner class ViewHolder internal constructor(
