@@ -1,4 +1,4 @@
-package com.example.covid19.home.newModel.timeSeries
+package com.example.covid19.home.newModel.dataV4.delta
 
 class Delta {
     var confirmed: Int? = null

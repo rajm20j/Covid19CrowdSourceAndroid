@@ -125,18 +125,12 @@ class StateDataBS : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.v("MAINNN", "onDestroy")
-    }
-
     companion object {
         var districtMap: SortedMap<String, Districts>? = null
         var keyItem: ArrayList<String?>? = null
         fun newInstance(districtMap: SortedMap<String, Districts>?): StateDataBS {
             this.districtMap = districtMap
             this.keyItem = arrayListOf()
-            this.keyItem?.add("")
             districtMap?.forEach { (key, _) -> this.keyItem?.add(key) }
             return StateDataBS()
         }

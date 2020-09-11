@@ -30,14 +30,34 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position%2 == 0)
-            holder.linearLayout.setBackgroundColor(context.resources.getColor(R.color.almost_almost_white, null))
+        if (position % 2 == 0)
+            holder.linearLayout.setBackgroundColor(
+                context.resources.getColor(
+                    R.color.almost_almost_white,
+                    null
+                )
+            )
         holder.bannerText.text = Constants.states[keyItem?.get(position)!!]
-        holder.bannerText.setBackgroundColor(context.resources.getColor(R.color.almost_almost_white, null))
+        holder.bannerText.setBackgroundColor(
+            context.resources.getColor(
+                R.color.almost_almost_white,
+                null
+            )
+        )
 
-        if(position == 0) {
-            holder.linearLayout.setBackgroundColor(context.resources.getColor(R.color.almost_black, null))
-            holder.bannerText.setBackgroundColor(context.resources.getColor(R.color.almost_black, null))
+        if (position == 0) {
+            holder.linearLayout.setBackgroundColor(
+                context.resources.getColor(
+                    R.color.almost_black,
+                    null
+                )
+            )
+            holder.bannerText.setBackgroundColor(
+                context.resources.getColor(
+                    R.color.almost_black,
+                    null
+                )
+            )
 
             holder.bannerText.text = context.resources.getString(R.string.stateut)
             holder.bannerText.setTextColor(context.resources.getColor(R.color.almost_white, null))
@@ -59,30 +79,29 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
 
         val confirmed = listItems?.get(keyItem?.get(position)!!)?.total?.confirmed
         val recovered = listItems?.get(keyItem?.get(position)!!)?.total?.recovered
-        val  deceased = listItems?.get(keyItem?.get(position)!!)?.total?.deceased
+        val deceased = listItems?.get(keyItem?.get(position)!!)?.total?.deceased
 
-        if(confirmed != null)
+        if (confirmed != null)
             holder.confirmed.text = Utils.formatNumber(confirmed)
 
-        if(confirmed != null && recovered != null && deceased != null)
-        {
+        if (confirmed != null && recovered != null && deceased != null) {
             val act = confirmed.minus(recovered).minus(deceased)
             holder.active.text = Utils.formatNumber(act)
         }
 
-        if(recovered != null)
+        if (recovered != null)
             holder.recovered.text = Utils.formatNumber(recovered)
 
-        if(deceased != null)
+        if (deceased != null)
             holder.deceased.text = Utils.formatNumber(deceased)
 
         holder.linearLayout.setOnClickListener {
             val dialogHelper = DialogHelper()
-            Log.v("MAINNN", position.toString())
-            listItems?.get(keyItem?.get(position)!!)?.districts?.forEach { key, value ->
-                Log.v("MAINNN", key)
-            }
-            dialogHelper.getHeadingListSlideUp(fragmentManager, listItems?.get(keyItem?.get(position)!!)?.districts)
+            listItems?.get(keyItem?.get(position)!!)?.districts?.put("#", null)
+            dialogHelper.getHeadingListSlideUp(
+                fragmentManager,
+                listItems?.get(keyItem?.get(position)!!)?.districts
+            )
         }
     }
 
@@ -100,9 +119,15 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
         val deceased = itemView.findViewById(R.id.deceased) as TextView
     }
 
-    constructor(context: Context, listItems: SortedMap<String?, StateData?>?, fragmentManager: FragmentManager) : this() {
+    constructor(
+        context: Context,
+        listItems: SortedMap<String?, StateData?>?,
+        fragmentManager: FragmentManager
+    ) : this() {
         this.context = context
         this.listItems = listItems
+        this.listItems?.remove(Constants.India)
+
         this.fragmentManager = fragmentManager
         val keyItem: ArrayList<String?> = arrayListOf()
         listItems?.forEach { (key, _) -> keyItem.add(key) }

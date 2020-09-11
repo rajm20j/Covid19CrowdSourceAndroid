@@ -5,7 +5,6 @@ import com.example.covid19.data.ApiCallInterface
 import com.example.covid19.data.Repository
 import com.example.covid19.extras.Constants
 import com.example.covid19.home.HomeActivityViewModelFactory
-import com.example.covid19.rawData.DataActivityViewModelFactory
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -62,12 +61,6 @@ class UtilsModule {
     @Singleton
     internal fun getRepository(apiCallInterface: ApiCallInterface): Repository {
         return Repository(apiCallInterface)
-    }
-
-    @Provides
-    @Singleton
-    internal fun getDataActivityVMFactory(repository: Repository): ViewModelProvider.Factory {
-        return DataActivityViewModelFactory(repository)
     }
 
     @Provides

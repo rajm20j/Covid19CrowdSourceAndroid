@@ -14,10 +14,9 @@ import com.example.covid19.R
 import com.example.covid19.data.model.ApiResponse
 import com.example.covid19.data.model.Status
 import com.example.covid19.databinding.ActivityHomeBinding
+import com.example.covid19.extras.Constants
 import com.example.covid19.home.model.HomeStatsListAdapter
 import com.example.covid19.home.newModel.dataV4.StateData
-import com.example.covid19.home.newModel.timeSeries.DateData
-import com.example.covid19.home.newModel.timeSeries.DateInfo
 import com.example.covid19.utils.Utils
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
@@ -27,7 +26,6 @@ import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 
 class HomeActivity : AppCompatActivity() {
@@ -61,12 +59,7 @@ class HomeActivity : AppCompatActivity() {
             this,
             Observer<ApiResponse> { this.consumeHomeData(it) })
 
-        homeActivityViewModel.homeStateDataResponse.observe(
-            this,
-            Observer<ApiResponse> { this.consumeHomeStateData(it) })
-
         homeActivityViewModel.hitHomeDataApi()
-        homeActivityViewModel.hitHomeStateDataApi()
     }
 
     private fun setActionBarLayout() {
@@ -98,10 +91,12 @@ class HomeActivity : AppCompatActivity() {
         when (apiResponse.status) {
             Status.LOADING -> {
                 binding.cardShimmer.startShimmer()
+                binding.jumboShimmer.startShimmer()
             }
 
             Status.ERROR -> {
                 binding.cardShimmer.stopShimmer()
+                binding.jumboShimmer.stopShimmer()
                 renderErrorHomeDataResponse(apiResponse.error)
             }
 
@@ -109,6 +104,9 @@ class HomeActivity : AppCompatActivity() {
                 renderSuccessHomeDataResponse(apiResponse.data)
                 binding.cardShimmer.stopShimmer()
                 binding.cardShimmer.hideShimmer()
+
+                binding.jumboShimmer.startShimmer()
+                binding.jumboShimmer.hideShimmer()
             }
             else -> Log.e(TAG, "Ye kya hua? :O")
         }
@@ -126,58 +124,25 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, "Arrey aggey ni parse ho ra", Toast.LENGTH_SHORT).show()
         }
 
+        fillJumboTab1(allData?.get(Constants.India))
+
+        allData?.put("#", null)
         binding.homeRv.adapter = HomeStatsListAdapter(this, allData, supportFragmentManager)
         binding.homeRv.layoutManager= LinearLayoutManager(this)
         (binding.homeRv.adapter as HomeStatsListAdapter).notifyItemRangeInserted(0, allData!!.size)
-    }
 
-    private fun consumeHomeStateData(apiResponse: ApiResponse) {
-        when (apiResponse.status) {
-            Status.LOADING -> {
-                binding.jumboShimmer.startShimmer()
-            }
-
-            Status.ERROR -> {
-                renderErrorHomeSDataResponse(apiResponse.error)
-                binding.jumboShimmer.stopShimmer()
-            }
-
-            Status.SUCCESS -> {
-                renderSuccessHomeSDataResponse(apiResponse.data)
-                binding.jumboShimmer.stopShimmer()
-                binding.jumboShimmer.hideShimmer()
-            }
-            else -> Log.e(TAG, "Ye kya hua? :O")
-        }
-    }
-
-    private fun renderSuccessHomeSDataResponse(data: JsonElement?) {
-        val jsonObject = data!!.asJsonObject
-        Utils.logInPrettyFormat(TAG, jsonObject.toString())
-
-        var allData: HashMap<String?, DateData?>? = null
-        try {
-            val type: Type = object : TypeToken<HashMap<String?, DateData?>?>() {}.type
-            allData = gson.fromJson(jsonObject.toString(), type)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Arrey aggey ni parse ho ra", Toast.LENGTH_SHORT).show()
-        }
-        val lastDateEntry  = allData?.get("TT")?.dates?.lastEntry()?.key!!
-        fillJumboTab(allData["TT"]?.dates?.get(lastDateEntry))
     }
 
     @SuppressLint("SetTextI18n")
-    private fun fillJumboTab(currentStats: DateInfo?) {
-
-        var total = 0
-
+    private fun fillJumboTab1(currentStats: StateData?) {
+        Log.v("MAINNN", currentStats?.total?.confirmed.toString())
         binding.homeConfirmed.text = Utils.formatNumber(currentStats?.total?.confirmed)
 
-        val active = currentStats?.total?.confirmed!!.minus(currentStats.total?.recovered!!).minus(
-            currentStats.total?.deceased!!)
+        val active = currentStats?.total?.confirmed!!.minus(currentStats.total.recovered!!).minus(
+            currentStats.total.deceased!!)
         binding.homeActive.text = Utils.formatNumber(active)
-        binding.homeRecovered.text = Utils.formatNumber(currentStats.total?.recovered)
-        binding.homeDeceased.text = Utils.formatNumber(currentStats.total?.deceased)
+        binding.homeRecovered.text = Utils.formatNumber(currentStats.total.recovered)
+        binding.homeDeceased.text = Utils.formatNumber(currentStats.total.deceased)
 
         val confirmedDelta = Utils.formatNumber(currentStats.delta?.confirmed)
         binding.homeConfirmedDelta.text = "[+$confirmedDelta]"
@@ -188,16 +153,13 @@ class HomeActivity : AppCompatActivity() {
         val recoveredDelta = Utils.formatNumber(currentStats.delta?.recovered)
         binding.homeRecoveredDelta.text = "[+$recoveredDelta]"
 
-        val activeDelta = Utils.formatNumber(currentStats.delta?.confirmed!!.minus(currentStats.delta?.recovered!!).minus(
+        /*val activeDelta = Utils.formatNumber(currentStats.delta?.confirmed!!.minus(currentStats.delta?.recovered!!).minus(
             currentStats.delta?.deceased!!))
-        binding.homeActiveDelta.text = "[+$activeDelta]"
+        binding.homeActiveDelta.text = "[+$activeDelta]"*/
+        binding.homeActiveDelta.visibility = View.INVISIBLE
     }
 
     private fun renderErrorHomeDataResponse(error: Throwable?) {
-        Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
-    }
-
-    private fun renderErrorHomeSDataResponse(error: Throwable?) {
         Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
     }
 }
