@@ -14,7 +14,6 @@ import com.example.covid19.R
 import com.example.covid19.databinding.FragmentStateDataBsListBinding
 import com.example.covid19.databinding.StateDataListBinding
 import com.example.covid19.home.newModel.dataV4.StateData
-import com.example.covid19.home.newModel.dataV4.districts.Districts
 import com.example.covid19.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
@@ -37,30 +36,33 @@ class StateDataBS : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        fillJumboTab1()
+        binding.textState.text = Optional.ofNullable(stateName).orElse("")
+        fillJumboTab1(districtMap)
         binding.stateRv.layoutManager =
             LinearLayoutManager(context)
-        binding.stateRv.adapter = ItemAdapter(districtMap?.size!!)
+        binding.stateRv.adapter = ItemAdapter(districtMap?.districts?.size!!)
     }
 
     @SuppressLint("SetTextI18n")
     private fun fillJumboTab1(currentStats: StateData?) {
         Log.v("MAINNN", currentStats?.total?.confirmed.toString())
-        binding.homeConfirmed.text = Utils.formatNumber(currentStats?.total?.confirmed)
 
-        val active = currentStats?.total?.confirmed!!.minus(currentStats.total.recovered!!).minus(
-            currentStats.total.deceased!!)
+        binding.homeConfirmed.text = Utils.formatNumber(Optional.ofNullable(currentStats?.total?.confirmed).orElse(0))
+
+        val active = Optional.ofNullable(currentStats?.total?.confirmed).orElse(0).minus(Optional.ofNullable(currentStats?.total?.recovered).orElse(0)).minus(
+            Optional.ofNullable(currentStats?.total?.deceased).orElse(0))
         binding.homeActive.text = Utils.formatNumber(active)
-        binding.homeRecovered.text = Utils.formatNumber(currentStats.total.recovered)
-        binding.homeDeceased.text = Utils.formatNumber(currentStats.total.deceased)
 
-        val confirmedDelta = Utils.formatNumber(currentStats.delta?.confirmed)
+        binding.homeRecovered.text = Utils.formatNumber(Optional.ofNullable(currentStats?.total?.recovered).orElse(0))
+        binding.homeDeceased.text = Utils.formatNumber(Optional.ofNullable(currentStats?.total?.deceased).orElse(0))
+
+        val confirmedDelta = Utils.formatNumber(Optional.ofNullable(currentStats?.delta?.confirmed).orElse(0))
         binding.homeConfirmedDelta.text = "[+$confirmedDelta]"
 
-        val deceasedDelta = Utils.formatNumber(currentStats.delta?.deceased)
+        val deceasedDelta = Utils.formatNumber(Optional.ofNullable(currentStats?.delta?.deceased).orElse(0))
         binding.homeDeceasedDelta.text = "[+$deceasedDelta]"
 
-        val recoveredDelta = Utils.formatNumber(currentStats.delta?.recovered)
+        val recoveredDelta = Utils.formatNumber(Optional.ofNullable(currentStats?.delta?.recovered).orElse(0))
         binding.homeRecoveredDelta.text = "[+$recoveredDelta]"
 
         /*val activeDelta = Utils.formatNumber(currentStats.delta?.confirmed!!.minus(currentStats.delta?.recovered!!).minus(
@@ -123,9 +125,9 @@ class StateDataBS : BottomSheetDialogFragment() {
                 return
             }
 
-            val confirmed = districtMap?.get(keyItem?.get(position)!!)?.total?.confirmed
-            val recovered = districtMap?.get(keyItem?.get(position)!!)?.total?.recovered
-            val  deceased = districtMap?.get(keyItem?.get(position)!!)?.total?.deceased
+            val confirmed = districtMap?.districts?.get(keyItem?.get(position)!!)?.total?.confirmed
+            val recovered = districtMap?.districts?.get(keyItem?.get(position)!!)?.total?.recovered
+            val  deceased = districtMap?.districts?.get(keyItem?.get(position)!!)?.total?.deceased
 
             if(confirmed != null)
                 holder.confirmed.text = Utils.formatNumber(confirmed)
@@ -153,12 +155,17 @@ class StateDataBS : BottomSheetDialogFragment() {
     }
 
     companion object {
-        var districtMap: SortedMap<String, Districts>? = null
+        var districtMap: StateData? = null
         var keyItem: ArrayList<String?>? = null
-        fun newInstance(districtMap: SortedMap<String, Districts>?): StateDataBS {
+        var stateName: String? = null
+        fun newInstance(
+            districtMap: StateData?,
+            stateName: String?
+        ): StateDataBS {
+            this.stateName = stateName
             this.districtMap = districtMap
             this.keyItem = arrayListOf()
-            districtMap?.forEach { (key, _) -> this.keyItem?.add(key) }
+            districtMap?.districts?.forEach { (key, _) -> this.keyItem?.add(key) }
             return StateDataBS()
         }
     }

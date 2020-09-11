@@ -1,7 +1,6 @@
 package com.example.covid19.home.model
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -100,7 +99,8 @@ class HomeStatsListAdapter() : RecyclerView.Adapter<HomeStatsListAdapter.ViewHol
             listItems?.get(keyItem?.get(position)!!)?.districts?.put("#", null)
             dialogHelper.getHeadingListSlideUp(
                 fragmentManager,
-                listItems?.get(keyItem?.get(position)!!)?.districts
+                listItems?.get(keyItem?.get(position)!!),
+                Constants.states[keyItem?.get(position)!!]
             )
         }
     }
