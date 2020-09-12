@@ -107,7 +107,7 @@ class StateDataBS : BottomSheetDialogFragment() {
                 holder.linearLayout.setBackgroundColor(context?.resources!!.getColor(R.color.almost_black, null))
                 holder.bannerText.setBackgroundColor(context!!.resources.getColor(R.color.almost_black, null))
 
-                holder.bannerText.text = context!!.resources.getString(R.string.stateut)
+                holder.bannerText.text = context!!.resources.getString(R.string.district)
                 holder.bannerText.setTextColor(context!!.resources.getColor(R.color.almost_white, null))
 
                 holder.confirmed.text = context!!.resources.getString(R.string.confirmed)

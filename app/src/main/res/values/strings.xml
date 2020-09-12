@@ -12,4 +12,5 @@
     <string name="deceased">Deceased</string>
     <string name="stateut">State/UT</string>
     <string name="hyphen">-</string>
+    <string name="district">District</string>
 </resources>
