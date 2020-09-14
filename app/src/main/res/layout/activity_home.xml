@@ -83,9 +83,9 @@
                     android:id="@+id/card_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp">
 
                     <GridLayout
@@ -265,9 +265,9 @@
                     android:id="@+id/rv_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -278,7 +278,8 @@
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="none">
+                        android:scrollbars="none"
+                        android:layout_gravity="center">
                         <com.facebook.shimmer.ShimmerFrameLayout
                             android:id="@+id/card_shimmer"
                             android:layout_width="match_parent"
@@ -289,6 +290,7 @@
                             android:layout_height="wrap_content"
                             android:scrollbars="none"
                             tools:itemCount="28"
+                            android:layout_gravity="center"
                             tools:listitem="@layout/home_list_item" />
                         </com.facebook.shimmer.ShimmerFrameLayout>
                     </HorizontalScrollView>
